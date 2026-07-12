@@ -3,40 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TIC-TAC-TOE</title>
+    <title>TIC-TAC-TOE — Blueprint</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="EndScreen" id="endscreen">
         <div class="screen-box">
-            <span class="chip">GAME OVER</span>
+            <span class="tag">RESULT</span>
             <h1 id="h1"></h1>
-            <button id="restart">Play Again</button>
+            <button id="restart">Run Again</button>
         </div>
     </div>
 
     <div class="game_option" id="game_option">
-        <p class="eyebrow">chalkboard tic-tac-toe</p>
-        <h1 class="title">Three in a Row</h1>
-        <p class="subtitle">Pick how you want to play</p>
-        <div class="option-row">
-            <button id="userAnduser" class="game-type">Player vs Player</button>
-            <span class="vs-divider">or</span>
-            <button id="userAndsys" class="game-type">Player vs System</button>
-        </div>
+        <p class="eyebrow">SELECT CONFIGURATION</p>
+        <button id="userAnduser" class="game-type">Player vs Player</button>
+        <button id="userAndsys" class="game-type">Player vs System</button>
     </div>
 
+    <p class="eyebrow eyebrow--page">FIG. 01 &nbsp;—&nbsp; 3×3 GRID SYSTEM</p>
     <header>
-        <span class="turn-label">now playing</span>
         <h1 id="turn"></h1>
     </header>
     <main>
         <div class="board-frame">
-            <span class="tape tape-left"></span>
-            <span class="tape tape-right"></span>
+            <span class="crosshair tl"></span>
+            <span class="crosshair tr"></span>
+            <span class="crosshair bl"></span>
+            <span class="crosshair br"></span>
             <div class="board">
                 <div id="box1" class="boxes">1</div>
                 <div id="box2" class="boxes">2</div>
@@ -49,6 +46,7 @@
                 <div id="box9" class="boxes">9</div>
             </div>
         </div>
+        <p class="scale-label">SCALE 1:1 &nbsp;·&nbsp; UNITS: CELLS</p>
     </main>
 
     <script src="script.js"></script>

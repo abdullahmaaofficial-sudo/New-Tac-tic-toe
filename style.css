@@ -1,69 +1,48 @@
 /* ============================================================
-   TIC-TAC-TOE — "Chalkboard Notebook"
-   A hand-drawn scoresheet taped to a classroom chalkboard.
-   Token system:
-   --slate-900 #16211F  (deep chalkboard shadow)
-   --slate-800 #223530  (chalkboard surface)
-   --paper     #F3ECD8  (notebook paper the board is drawn on)
-   --paper-line#D8CDA9  (faint ruled-paper lines)
-   --chalk-yellow #F2C572
-   --chalk-pink   #E8879E
-   --chalk-blue   #86C5D8
-   --ink       #22201A  (pencil/ink marks)
+   TIC-TAC-TOE — "Blueprint" theme
+   Cyanotype drafting sheet: dashed dimension lines, registration
+   crosshairs, technical stencil type.
    ============================================================ */
 
 :root{
-    --slate-900: #141F1C;
-    --slate-800: #223530;
-    --slate-700: #2C433C;
-    --paper: #F3ECD8;
-    --paper-line: #D8CDA9;
-    --chalk-yellow: #F2C572;
-    --chalk-pink: #E8879E;
-    --chalk-blue: #86C5D8;
-    --ink: #22201A;
+    --blue-deep:   #0A2C42;
+    --blue-mid:    #123B57;
+    --blue-line:   #5CB3DE;
+    --blue-line-dim: rgba(92, 179, 222, 0.18);
+    --ink:         #EAF4FA;
+    --orange:      #E8722C;
+    --board-line:  #2E5773;
 
-    --font-display: 'Kalam', cursive;
-    --font-body: 'Space Grotesk', sans-serif;
+    --font-display: "Share Tech Mono", ui-monospace, monospace;
+    --font-mono: "JetBrains Mono", ui-monospace, monospace;
 }
 
-*{
-    padding: 0;
-    margin: 0;
-    box-sizing: border-box;
-}
+*{ padding: 0; margin: 0; box-sizing: border-box; }
 
 body{
-    background:
-        radial-gradient(circle at 15% 20%, rgba(242,197,114,0.05), transparent 40%),
-        radial-gradient(circle at 85% 75%, rgba(134,197,216,0.06), transparent 45%),
-        var(--slate-900);
-    min-height: 100vh;
+    background-color: var(--blue-deep);
+    background-image:
+        linear-gradient(var(--blue-line-dim) 1px, transparent 1px),
+        linear-gradient(90deg, var(--blue-line-dim) 1px, transparent 1px);
+    background-size: 28px 28px;
     display: flex;
     align-items: center;
     flex-direction: column;
-    height: 100vh;
-    padding: 3.5rem 0 2.5rem;
-    gap: 28px;
-    font-family: var(--font-body);
-    position: relative;
-    overflow: hidden;
+    min-height: 100vh;
+    padding: 3.5rem 1.5rem 4rem;
+    gap: 20px;
+    font-family: var(--font-mono);
+    color: var(--ink);
 }
 
-/* faint chalk dust scattered across the board */
-body::before{
-    content: '';
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    background-image:
-        radial-gradient(2px 2px at 10% 15%, rgba(255,255,255,0.18), transparent),
-        radial-gradient(1.5px 1.5px at 30% 65%, rgba(255,255,255,0.12), transparent),
-        radial-gradient(2px 2px at 70% 25%, rgba(255,255,255,0.14), transparent),
-        radial-gradient(1.5px 1.5px at 85% 80%, rgba(255,255,255,0.1), transparent),
-        radial-gradient(1.5px 1.5px at 50% 90%, rgba(255,255,255,0.12), transparent),
-        radial-gradient(2px 2px at 92% 45%, rgba(255,255,255,0.1), transparent);
-    z-index: 0;
+.eyebrow{
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--blue-line);
+    text-align: center;
 }
 
 header{
@@ -71,371 +50,249 @@ header{
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    gap: 6px;
-    z-index: 1;
 }
 
-.turn-label{
-    font-family: var(--font-body);
-    text-transform: uppercase;
-    letter-spacing: 0.28em;
-    font-size: 0.7rem;
-    color: rgba(243,236,216,0.45);
-}
-
-#turn{
-    color: var(--paper);
-    font-family: var(--font-display);
-    font-size: 2.6rem;
-    font-weight: 700;
-    padding: 0.55rem 1.6rem;
-    border-radius: 14px;
-    border: 2px dashed rgba(242,197,114,0.55);
-    background: rgba(243,236,216,0.04);
-    text-align: center;
-    letter-spacing: 0.01em;
-}
-
-/* ===================== Game option screen ===================== */
+/* ---------- Start overlay ---------- */
 
 .game_option{
     height: 100vh;
     width: 100vw;
     z-index: 1000;
-    background:
-        radial-gradient(circle at 50% 0%, rgba(134,197,216,0.06), transparent 55%),
-        var(--slate-900);
-    position: absolute;
-    top: 0;
+    background-color: rgba(6, 18, 28, 0.94);
+    backdrop-filter: blur(16px);
+    position: fixed;
+    inset: 0;
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    gap: 10px;
-    text-align: center;
-    padding: 2rem;
+    gap: 20px;
 }
 
-.eyebrow{
-    font-family: var(--font-body);
-    text-transform: uppercase;
-    letter-spacing: 0.32em;
-    font-size: 0.75rem;
-    color: var(--chalk-blue);
-    margin-bottom: 4px;
-}
-
-.game_option .title{
+.game_option > button{
     font-family: var(--font-display);
-    font-size: 4.2rem;
-    font-weight: 700;
-    color: var(--paper);
-    line-height: 1.05;
-    text-shadow: 0 0 22px rgba(243,236,216,0.12);
-}
-
-.game_option .subtitle{
-    font-family: var(--font-body);
-    color: rgba(243,236,216,0.55);
-    font-size: 1rem;
-    margin-bottom: 28px;
-}
-
-.option-row{
-    display: flex;
-    align-items: center;
-    gap: 22px;
-}
-
-.vs-divider{
-    font-family: var(--font-display);
-    color: rgba(243,236,216,0.4);
-    font-size: 1.2rem;
-}
-
-.game_option > .option-row > button{
-    padding: 1.15rem 2.4rem;
-    font-family: var(--font-display);
-    font-size: 1.5rem;
-    font-weight: 700;
-    border-radius: 14px;
+    padding: 1.3rem 3rem;
+    font-size: 1.35rem;
+    font-weight: 400;
+    letter-spacing: 0.05em;
     cursor: pointer;
-    border: 2px solid rgba(243,236,216,0.25);
-    transition: transform 0.18s ease, box-shadow 0.18s ease, background-color 0.18s ease;
-}
-
-#userAnduser{
-    color: var(--slate-900);
-    background-color: var(--chalk-yellow);
-    box-shadow: 0 6px 0 0 #c99a48;
+    background: transparent;
+    border: 1.5px dashed var(--blue-line);
+    color: var(--ink);
+    border-radius: 2px;
+    transition: background-color 0.18s ease, border-style 0.18s ease, color 0.18s ease;
 }
 #userAnduser:hover{
-    transform: translateY(-3px);
-    box-shadow: 0 9px 0 0 #c99a48;
+    border-style: solid;
+    background-color: rgba(92, 179, 222, 0.12);
 }
 #userAnduser:active{
-    transform: translateY(2px);
-    box-shadow: 0 3px 0 0 #c99a48;
+    background-color: rgba(92, 179, 222, 0.22);
 }
-
 #userAndsys{
-    color: var(--slate-900);
-    background-color: var(--chalk-blue);
-    box-shadow: 0 6px 0 0 #5f9caf;
+    border-color: var(--orange);
+    color: var(--orange);
 }
 #userAndsys:hover{
-    transform: translateY(-3px);
-    box-shadow: 0 9px 0 0 #5f9caf;
+    border-style: solid;
+    background-color: rgba(232, 114, 44, 0.12);
 }
 #userAndsys:active{
-    transform: translateY(2px);
-    box-shadow: 0 3px 0 0 #5f9caf;
+    background-color: rgba(232, 114, 44, 0.22);
 }
 
-/* ===================== End screen ===================== */
+/* ---------- End screen ---------- */
 
 .EndScreen{
     display: none;
     height: 100vh;
     width: 100vw;
-    position: absolute;
-    top: 0;
-    background: rgba(20,31,28,0.88);
-    backdrop-filter: blur(10px);
+    position: fixed;
+    inset: 0;
+    background-color: rgba(6, 18, 28, 0.94);
+    backdrop-filter: blur(12px);
     justify-content: center;
     align-items: center;
-    z-index: 1001;
+    z-index: 100;
 }
 
 .screen-box{
-    font-family: var(--font-body);
-    border: 2px dashed rgba(242,197,114,0.5);
-    border-radius: 18px;
-    box-shadow: 0 20px 45px rgba(0,0,0,0.4);
-    background: var(--slate-800);
-    padding: 3.2rem 3.6rem;
+    font-family: var(--font-mono);
+    border: 1.5px solid var(--blue-line);
+    background-color: var(--blue-mid);
+    padding: 3rem 3.8rem;
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 18px;
+    gap: 16px;
     flex-direction: column;
+    position: relative;
 }
+.screen-box::before,
+.screen-box::after{
+    content: "";
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    border: 1.5px solid var(--orange);
+}
+.screen-box::before{ top: -1.5px; left: -1.5px; border-right: none; border-bottom: none; }
+.screen-box::after{ bottom: -1.5px; right: -1.5px; border-left: none; border-top: none; }
 
-.chip{
-    font-family: var(--font-body);
-    letter-spacing: 0.24em;
+.tag{
     font-size: 0.7rem;
-    text-transform: uppercase;
-    color: var(--slate-900);
-    background: var(--chalk-pink);
-    padding: 5px 14px;
-    border-radius: 999px;
-    font-weight: 600;
+    letter-spacing: 0.3em;
+    color: var(--orange);
+    border: 1px solid var(--orange);
+    padding: 0.2rem 0.8rem;
 }
 
 .screen-box > h1{
     font-family: var(--font-display);
-    font-size: 3rem;
-    font-weight: 700;
+    font-size: 2.6rem;
+    font-weight: 400;
     text-align: center;
-    color: var(--paper);
+    color: var(--ink);
+    letter-spacing: 0.02em;
 }
 
 .screen-box > button{
     font-family: var(--font-display);
-    font-size: 1.6rem;
-    font-weight: 700;
-    padding: 0.95rem 2.6rem;
-    color: var(--slate-900);
+    font-size: 1.2rem;
+    padding: 0.9rem 2.6rem;
+    color: var(--blue-deep);
     border: none;
     cursor: pointer;
-    background-color: var(--chalk-yellow);
-    border-radius: 14px;
+    background-color: var(--blue-line);
     outline: none;
-    box-shadow: 0 6px 0 0 #c99a48;
-    transition: transform 0.18s ease, box-shadow 0.18s ease;
+    transition: background-color 0.18s ease, transform 0.15s ease;
 }
 .screen-box > button:hover{
-    transform: translateY(-3px);
-    box-shadow: 0 9px 0 0 #c99a48;
+    background-color: var(--orange);
+    color: var(--ink);
+    transform: translateY(-2px);
 }
-.screen-box > button:active{
-    transform: translateY(2px);
-    box-shadow: 0 3px 0 0 #c99a48;
+.screen-box > button:active{ transform: translateY(0); }
+.screen-box > button:focus-visible,
+.game_option > button:focus-visible{
+    outline: 2px solid var(--orange);
+    outline-offset: 3px;
 }
 
-/* ===================== Board ===================== */
+/* ---------- Turn heading ---------- */
+
+#turn{
+    font-family: var(--font-display);
+    color: var(--ink);
+    font-size: 1.7rem;
+    font-weight: 400;
+    padding: 0.55rem 1.6rem;
+    border: 1.5px dashed var(--blue-line);
+    text-align: center;
+    letter-spacing: 0.03em;
+}
+
+.scale-label{
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    color: var(--blue-line);
+    opacity: 0.7;
+    margin-top: 14px;
+    text-align: center;
+}
+
+/* ---------- Board + registration frame ---------- */
 
 main{
-    z-index: 1;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    align-items: center;
 }
 
 .board-frame{
     position: relative;
-    padding: 30px;
+    padding: 22px;
 }
 
-.tape{
+.crosshair{
     position: absolute;
-    width: 70px;
-    height: 26px;
-    background: rgba(242,197,114,0.55);
-    border: 1px solid rgba(242,197,114,0.7);
-    box-shadow: 0 3px 6px rgba(0,0,0,0.25);
-    z-index: 2;
-    top: 6px;
+    width: 18px;
+    height: 18px;
 }
-.tape-left{
-    left: 6%;
-    transform: rotate(-8deg);
+.crosshair::before,
+.crosshair::after{
+    content: "";
+    position: absolute;
+    background-color: var(--orange);
 }
-.tape-right{
-    right: 6%;
-    transform: rotate(7deg);
-}
+.crosshair::before{ width: 100%; height: 2px; top: 50%; left: 0; transform: translateY(-50%); }
+.crosshair::after{ height: 100%; width: 2px; left: 50%; top: 0; transform: translateX(-50%); }
+.crosshair.tl{ top: 0; left: 0; }
+.crosshair.tr{ top: 0; right: 0; }
+.crosshair.bl{ bottom: 0; left: 0; }
+.crosshair.br{ bottom: 0; right: 0; }
 
 .board{
-    background: var(--paper);
-    background-image: repeating-linear-gradient(
-        rgba(216,205,169,0.6) 0px,
-        rgba(216,205,169,0.6) 1px,
-        transparent 1px,
-        transparent 34px
-    );
-    height: 58vh;
+    background-color: var(--board-line);
+    height: 56vh;
     width: 46vw;
-    border-radius: 10px;
-    border: 3px solid rgba(34,32,26,0.75);
-    box-shadow: 0 18px 40px rgba(0,0,0,0.45), inset 0 0 0 6px var(--paper);
+    max-width: 520px;
+    border: 1.5px solid var(--blue-line);
     display: grid;
     grid-template-columns: repeat(3,1fr);
+    gap: 1.5px;
 }
 
 .boxes{
-    border: 2px dashed rgba(34,32,26,0.35);
+    background-color: var(--blue-mid);
     font-family: var(--font-display);
-    font-size: 4.6rem;
-    font-weight: 700;
-    color: rgba(0,0,0,0.0);
+    font-size: 4.4rem;
+    font-weight: 400;
+    color: rgba(234, 244, 250, 0) !important;
     display: flex;
     justify-content: center;
     align-items: center;
     cursor: pointer;
     transition: background-color 0.15s ease;
-    -webkit-tap-highlight-color: transparent;
-    user-select: none;
 }
 .boxes:hover{
-    background-color: rgba(34,32,26,0.05);
+    background-color: #1B4E70;
 }
 
-.boxes:nth-child(1){ transform: rotate(-0.6deg); }
-.boxes:nth-child(3){ transform: rotate(0.7deg); }
-.boxes:nth-child(5){ transform: rotate(-0.4deg); }
-.boxes:nth-child(7){ transform: rotate(0.5deg); }
-.boxes:nth-child(9){ transform: rotate(-0.7deg); }
+/* once a mark is placed, JS sets an inline color; override it so
+   marks stay legible against the dark drafting-sheet background */
+.boxes[style*="black"]{
+    color: var(--ink) !important;
+}
 
-#box1{ border-top-left-radius: 8px; border-left: none; border-top: none; }
-#box3{ border-top-right-radius: 8px; border-right: none; border-top: none; }
-#box7{ border-bottom-left-radius: 8px; border-left: none; border-bottom: none; }
-#box9{ border-bottom-right-radius: 8px; border-right: none; border-bottom: none; }
-#box2, #box4, #box5, #box6, #box8{ border-top: none; }
-#box1, #box2, #box3{ border-top: none; }
+/* ---------- Motion ---------- */
 
-/* ===================== Responsive ===================== */
+@media (prefers-reduced-motion: reduce){
+    *{ animation: none !important; transition: none !important; }
+}
+
+/* ---------- Responsive ---------- */
 
 @media (max-width: 1024px) {
-    .board{
-        width: 78vw;
-        height: 55vh;
-    }
-    .game_option .title{
-        font-size: 3.4rem;
-    }
+    .board{ width: 78vw; height: 55vh; }
 }
 
 @media (max-width: 768px){
-    .board{
-        width: 85vw;
-    }
-
-    #turn{
-        font-size: 2rem;
-    }
-
-    .screen-box{
-        padding: 2.4rem 2.2rem;
-    }
-    .screen-box > h1{
-        font-size: 2.2rem;
-    }
-    .screen-box > button{
-        font-size: 1.3rem;
-        padding: 0.8rem 2.2rem;
-    }
-    .game_option .title{
-        font-size: 2.6rem;
-    }
-    .option-row{
-        flex-direction: column;
-        gap: 14px;
-    }
-    .vs-divider{
-        display: none;
-    }
-    .boxes{
-        font-size: 3.4rem;
-    }
+    .board{ width: 84vw; }
+    #turn{ font-size: 1.3rem; }
+    .screen-box{ padding: 2.2rem 2.6rem; }
+    .screen-box > h1{ font-size: 2rem; }
+    .screen-box > button{ font-size: 1rem; padding: 0.75rem 2rem; }
+    .eyebrow{ font-size: 0.65rem; letter-spacing: 0.22em; }
 }
 
 @media (max-width: 480px) {
-    .game_option > .option-row > button{
-        font-size: 1.15rem;
-        padding: 0.9rem 2.4rem;
-        border-radius: 10px;
-    }
-
-    .screen-box{
-        padding: 1.8rem 1.6rem;
-    }
-    .screen-box > h1{
-        font-size: 1.6rem;
-    }
-    .screen-box > button{
-        font-size: 1.15rem;
-        padding: 0.7rem 1.8rem;
-    }
-
-    #turn{
-        font-size: 1.5rem;
-        padding: 0.4rem 1rem;
-    }
-    .turn-label{
-        font-size: 0.6rem;
-    }
-    .board{
-        width: 90vw;
-        height: 48vh;
-    }
-    .boxes{
-        font-size: 2.6rem;
-    }
-    .tape{
-        width: 46px;
-        height: 18px;
-    }
-    .game_option .title{
-        font-size: 2.1rem;
-    }
-    .eyebrow{
-        font-size: 0.6rem;
-    }
-}
-
-@media (prefers-reduced-motion: reduce){
-    *{
-        transition: none !important;
-    }
+    .game_option > button{ font-size: 1.05rem; padding: 0.9rem 2rem; }
+    .screen-box{ padding: 1.5rem; }
+    .screen-box > h1{ font-size: 1.5rem; }
+    .screen-box > button{ font-size: 0.95rem; padding: 0.65rem 1.6rem; }
+    #turn{ font-size: 1.05rem; padding: 0.45rem 1.1rem; }
+    .board{ width: 90vw; height: 48vh; }
+    .boxes{ font-size: 2.9rem; }
+    .board-frame{ padding: 14px; }
 }
