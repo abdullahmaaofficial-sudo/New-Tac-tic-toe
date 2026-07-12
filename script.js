@@ -1,34 +1,75 @@
 const BoxesArray = Array.from(document.getElementsByClassName('boxes'));
+const game_type_btns = Array.from(document.getElementsByClassName('game-type'));
+const GameOptionScreen = document.getElementById('game_option');
 const EndScreen = document.getElementById('endscreen');
 const turn_h1 = document.getElementById('turn');
+
 let Available_Moves = [1,2,3,4,5,6,7,8,9];
-const User = "O";
-const System = "X";
-let turn = User;
+const Player_1 = "O";
+const Player_2 = "X";
+let turn = Player_1;
 let current = '';
 
 ChangeTurnHeading();
 
-BoxesArray.forEach(box => {
-    box.addEventListener('click', () => {
-        let UserMove = parseInt(box.textContent);
-        if (Available_Moves.includes(UserMove) && turn === User){ 
-            ChangeBoard(box,User,UserMove)
-            ChangeTurnHeading()
-            if (!CheckGameCondition() && turn === System){
-                setTimeout(SystemMove,500);
-            }
-        }else{
-            console.log("Move Not Available!")
+game_type_btns.forEach(btn => {
+    btn.addEventListener('click',() => {
+        GameOptionScreen.style.display = 'none';
+        let game_type = btn.textContent;
+
+        if (game_type === 'Player vs Player'){
+            StartGame_UserAndUser()
+            UserAndUser_Key()
+        }else if (game_type === 'Player vs System'){
+            StartGame_UserAndSystem()
+            UserAndSytem_Key()
         }
     });
 });
 
-function SystemMove(){
+function StartGame_UserAndSystem(){
+    BoxesArray.forEach(box => {
+        box.addEventListener('click', () => {
+            const UserMove = parseInt(box.textContent);
+
+            if (Available_Moves.includes(UserMove) && turn == Player_1){
+                ChangeBoard(box,Player_1,UserMove)
+                ChangeTurnHeading()
+
+                if (!CheckGameCondition() && turn === Player_2){
+                    setTimeout(PlayerSysMove,500);
+                }
+            }else{console.log("Move Not Available!")}
+        });
+    });
+};
+
+function StartGame_UserAndUser(){
+    BoxesArray.forEach(box => {
+        box.addEventListener('click',() => {
+            const UserMove = parseInt(box.textContent);
+
+            if (Available_Moves.includes(UserMove) && !CheckGameCondition()){
+
+                if (turn === Player_1){
+                    ChangeBoard(box,Player_1,UserMove)
+                    ChangeTurnHeading()
+                }else if (turn === Player_2){
+                    ChangeBoard(box,Player_2,UserMove)
+                    ChangeTurnHeading()
+                }
+            }else{console.log("Move Not Available!")}
+
+            CheckGameCondition()
+        });
+    });
+};
+
+function PlayerSysMove(){
     let Move = Available_Moves[Math.floor(Math.random() * Available_Moves.length)];
     if (Available_Moves.length !== 0){
         const box = document.getElementById(`box${Move}`);
-        ChangeBoard(box,System,Move)
+        ChangeBoard(box,Player_2,Move)
         ChangeTurnHeading()
         CheckGameCondition()
     }
@@ -38,7 +79,7 @@ function ChangeBoard(box,marker,move_done){
     box.textContent = marker;
     box.style.color = 'black';
     Available_Moves = Available_Moves.filter(move => move !== move_done)
-    turn = marker === User ? System : User;
+    turn = marker === Player_1 ? Player_2 : Player_1;
 };
 
 function CheckGameCondition(){
@@ -83,11 +124,11 @@ function check_columns(arr){
     let col_2 = [];
     let col_3 = [];
 
-    for (item of array1){ col_1.push(arr[item]);}
+    for (let item of array1){ col_1.push(arr[item]);}
     col_1 = col_1.filter(m => m === col_1[0])
-    for (item of array2){col_2.push(arr[item]);}
+    for (let item of array2){col_2.push(arr[item]);}
     col_2 = col_2.filter(m => m === col_2[0])
-    for (item of array3){ col_3.push(arr[item]);}
+    for (let item of array3){ col_3.push(arr[item]);}
     col_3 = col_3.filter(m => m === col_3[0])
     
     if (col_1.length === 3){
@@ -111,9 +152,9 @@ function check_diagonals(arr){
     let diag_1 = [];
     let diag_2 = [];
 
-    for (i of array1){diag_1.push(arr[i])}
+    for (let i of array1){diag_1.push(arr[i])}
     diag_1 = diag_1.filter(m => m === diag_1[0])
-    for (i of array2){diag_2.push(arr[i])}
+    for (let i of array2){diag_2.push(arr[i])}
     diag_2 = diag_2.filter(m => m === diag_2[0])
 
     if (diag_1.length === 3){
@@ -136,24 +177,20 @@ function check_draw(){
 function finishGame(){
     const H1 = document.getElementById('h1');
     EndScreen.style.display = 'flex';
-    if (current === User){
-        H1.textContent = "You Win!";
-        H1.style.color = 'white';
+    if (current === Player_1){
+        H1.textContent = `Player 1 (${Player_1}): Win`;
     }
-    else if (current === System){
-        H1.textContent = "You Lose!"
-        H1.style.color = 'red';
+    else if (current === Player_2){
+        H1.textContent = `Player 2 (${Player_2}): Win`;
     }
     else if (current === "Draw"){
-        H1.textContent = "Draw";
-        H1.style.color = 'white';
+        H1.textContent = "It's a Draw";
     }
-    return
 };
 
 function RestarGame(){
     Available_Moves = [1,2,3,4,5,6,7,8,9];
-    turn = User;
+    turn = Player_1;
     current = '';
 
     for (let i = 0; i <= 8; i++){
@@ -167,20 +204,45 @@ function RestarGame(){
 };
 
 function ChangeTurnHeading(){
-    turn_h1.textContent = turn === User ? "Your Turn" : "System Turn";
+    turn_h1.textContent = turn === Player_1 ?  `Player 1 Turn: ${Player_1}` :  `Player 2 Turn: ${Player_2}`;
 };
 
 document.getElementById('restart').addEventListener('click', () => RestarGame());
 
-document.addEventListener('keydown',(e) => {
-    if (Available_Moves.includes(parseInt(e.key))){
-        let index = parseInt(e.key) - 1;
-        ChangeTurnHeading();
-        ChangeBoard(BoxesArray[index],User,parseInt(e.key))
-        if (!CheckGameCondition() && turn === System){
-            setTimeout(SystemMove, 500);
+function UserAndSytem_Key(){
+    document.addEventListener('keydown',(e) => {
+
+        if (Available_Moves.includes(parseInt(e.key)) && !CheckGameCondition()){
+            let index = parseInt(e.key) - 1;
+
+            ChangeBoard(BoxesArray[index],Player_1,parseInt(e.key))
+            ChangeTurnHeading()
+
+            if (!CheckGameCondition() && turn === Player_2){
+                setTimeout(PlayerSysMove, 500);
+            }
+        }else{
+            console.log("Move Not Available!")
         }
-    }else{
-        console.log("Move Not Available!")
-    }
-});
+    });
+};
+
+function UserAndUser_Key(){
+    document.addEventListener('keydown',(e) => {
+
+        if (Available_Moves.includes(parseInt(e.key)) && !CheckGameCondition()){
+            let index = parseInt(e.key) - 1;
+
+            if (turn === Player_1){
+                ChangeBoard(BoxesArray[index],Player_1,parseInt(e.key))
+                ChangeTurnHeading()
+            }else if (turn === Player_2){
+                ChangeBoard(BoxesArray[index],Player_2,parseInt(e.key))
+                ChangeTurnHeading()
+            }
+
+        }else {console.log("Move Not Available!")}
+
+        CheckGameCondition()
+    });
+};
